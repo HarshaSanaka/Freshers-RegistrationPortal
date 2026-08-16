@@ -60,9 +60,9 @@ def dashboard_view(request):
 
 @user_passes_test(lambda u: u.is_staff)
 def admin_dashboard_view(request):
-    students = StudentProfile.objects.all().order_by('-created_at')
+    students = StudentProfile.objects.select_related('user').prefetch_related('user__documents').order_by('-created_at')
     return render(request, 'accounts/admin_dashboard.html', {'students': students})
-
+  
 @user_passes_test(lambda u: u.is_staff)
 def update_status(request, pk, status):
     profile = get_object_or_404(StudentProfile, pk=pk)
