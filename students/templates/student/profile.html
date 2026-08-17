@@ -1,0 +1,30 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Personal Information{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="fw-bold mb-0">Personal Details</h4>
+                    <a href="{% url 'edit_profile' %}" class="btn btn-primary btn-sm">Edit Information</a>
+                </div>
+                <hr>
+                <div class="row g-3">
+                    <div class="col-sm-6"><strong>Full Name:</strong> {{ profile.user.get_full_name|default:"Not Provided" }}</div>
+                    <div class="col-sm-6"><strong>Email:</strong> {{ profile.user.email|default:"Not Provided" }}</div>
+                    <div class="col-sm-6"><strong>Phone:</strong> {{ profile.phone|default:"Not Provided" }}</div>
+                    <div class="col-sm-6"><strong>Gender:</strong> {{ profile.get_gender_display|default:"Not Provided" }}</div>
+                    <div class="col-sm-6"><strong>Date of Birth:</strong> {{ profile.date_of_birth|default:"Not Provided" }}</div>
+                    <div class="col-12"><strong>Address:</strong> {{ profile.address|default:"Not Provided" }}</div>
+                </div>
+                <div class="mt-4">
+                    <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary btn-sm">← Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
