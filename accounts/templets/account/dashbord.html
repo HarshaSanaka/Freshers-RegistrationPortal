@@ -1,0 +1,72 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Admin Verification Portal{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-0">Student Verification Dashboard</h3>
+        <p class="text-muted mb-0">Review submitted student documents and approve registrations.</p>
+    </div>
+    <span class="badge bg-secondary p-2">Total Applicants: {{ students|length }}</span>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Admission No</th>
+                    <th>Student Name</th>
+                    <th>Dept</th>
+                    <th>Scores (10th/12th)</th>
+                    <th>Documents</th>
+                    <th>Status</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td class="fw-semibold">{{ student.admission_number }}</td>
+                    <td>
+                        {{ student.user.get_full_name }}<br>
+                        <small class="text-muted">{{ student.user.email }}</small>
+                    </td>
+                    <td><span class="badge bg-info text-dark">{{ student.department }}</span></td>
+                    <td>{{ student.tenth_percentage }}% / {{ student.twelfth_percentage }}%</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <a href="{{ student.marksheet_10th.url }}" target="_blank" class="btn btn-outline-secondary">10th</a>
+                            <a href="{{ student.marksheet_12th.url }}" target="_blank" class="btn btn-outline-secondary">12th</a>
+                            <a href="{{ student.id_proof.url }}" target="_blank" class="btn btn-outline-secondary">ID</a>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge 
+                            {% if student.status == 'VERIFIED' %}bg-success
+                            {% elif student.status == 'REJECTED' %}bg-danger
+                            {% else %}bg-warning text-dark{% endif %}">
+                            {{ student.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        {% if student.status == 'PENDING' %}
+                            <a href="{% url 'update_status' student.id 'VERIFIED' %}" class="btn btn-sm btn-success">Approve</a>
+                            <a href="{% url 'update_status' student.id 'REJECTED' %}" class="btn btn-sm btn-danger">Reject</a>
+                        {% else %}
+                            <a href="{% url 'update_status' student.id 'PENDING' %}" class="btn btn-sm btn-outline-secondary">Reset</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-4 text-muted">No student applications submitted yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

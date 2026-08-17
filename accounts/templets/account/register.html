@@ -1,0 +1,115 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Student Registration{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-body p-4 p-md-5">
+                <h2 class="fw-bold mb-1">Fresher Self-Registration</h2>
+                <p class="text-muted mb-4">Fill in your academic and personal details to submit your application.</p>
+
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <strong>Please resolve the following errors:</strong>
+                        <ul class="mb-0 mt-2">
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- Basic Account Info -->
+                    <h5 class="fw-bold border-bottom pb-2 mb-3 text-primary">1. Account Details</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">First Name</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            {{ form.last_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email Address</label>
+                            {{ form.email }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Create Password</label>
+                            {{ form.password }}
+                        </div>
+                    </div>
+
+                    <!-- Personal Info -->
+                    <h5 class="fw-bold border-bottom pb-2 mb-3 text-primary">2. Personal Information</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label">Admission Number</label>
+                            {{ form.admission_number }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Phone Number</label>
+                            {{ form.phone_number }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Gender</label>
+                            {{ form.gender }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Date of Birth</label>
+                            {{ form.date_of_birth }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Permanent Address</label>
+                            {{ form.address }}
+                        </div>
+                    </div>
+
+                    <!-- Academic Info -->
+                    <h5 class="fw-bold border-bottom pb-2 mb-3 text-primary">3. Academic Information</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Enrolled Department</label>
+                            {{ form.department }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">10th Percentage (%)</label>
+                            {{ form.tenth_percentage }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">12th Percentage (%)</label>
+                            {{ form.twelfth_percentage }}
+                        </div>
+                    </div>
+
+                    <!-- Documents -->
+                    <h5 class="fw-bold border-bottom pb-2 mb-3 text-primary">4. Document Uploads (PDF/Images)</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label">10th Marksheet</label>
+                            {{ form.marksheet_10th }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">12th Marksheet</label>
+                            {{ form.marksheet_12th }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Government ID Proof</label>
+                            {{ form.id_proof }}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100">Submit Application</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
