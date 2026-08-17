@@ -74,3 +74,9 @@ def update_status(request, pk, status):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+@user_passes_test(lambda u: u.is_staff)
+def admin_dashboard_view(request):
+    # Prefetch related user documents for efficient queries
+    students = StudentProfile.objects.select_related('user').prefetch_related('user__documents').order_by('-created_at')
+    return render(request, 'accounts/admin_dashboard.html', {'students': students})

@@ -1,0 +1,86 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}My Uploaded Documents{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Upload Form Section -->
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h4 class="fw-bold mb-3">Upload Document</h4>
+                
+                {% if messages %}
+                    {% for msg in messages %}
+                        <div class="alert alert-success alert-dismissible fade show">
+                            {{ msg }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Select Document Type</label>
+                        {{ form.document_type }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Choose File (PDF, PNG, JPG - Max 2MB)</label>
+                        {{ form.file }}
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Upload / Replace</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Uploaded Documents Table -->
+    <div class="col-md-7">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h4 class="fw-bold mb-3">Your Uploaded Files</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Document</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for doc in documents %}
+                            <tr>
+                                <td>
+                                    <strong>{{ doc.get_document_type_display }}</strong><br>
+                                    <small class="text-muted">Updated: {{ doc.updated_at|date:"d M Y" }}</small>
+                                    {% if doc.rejection_reason %}
+                                        <div class="text-danger small mt-1">Reason: {{ doc.rejection_reason }}</div>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge 
+                                        {% if doc.status == 'APPROVED' %}bg-success
+                                        {% elif doc.status == 'REJECTED' %}bg-danger
+                                        {% else %}bg-warning text-dark{% endif %}">
+                                        {{ doc.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ doc.file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">View</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-3">No documents uploaded yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

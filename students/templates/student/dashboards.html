@@ -1,0 +1,80 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <!-- Welcome Card -->
+        <div class="card shadow-sm border-0 mb-4 bg-primary text-white">
+            <div class="card-body p-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="fw-bold mb-1">Welcome, {{ profile.user.first_name|default:profile.user.username }}!</h3>
+                    <p class="mb-0 text-white-50">Registration Number: <strong>{{ profile.registration_number }}</strong></p>
+                </div>
+                <div>
+                    <span class="badge fs-6 px-3 py-2 
+                        {% if profile.status == 'VERIFIED' %}bg-success
+                        {% elif profile.status == 'REJECTED' %}bg-danger
+                        {% elif profile.status == 'UNDER_REVIEW' %}bg-warning text-dark
+                        {% else %}bg-secondary{% endif %}">
+                        {{ profile.get_status_display }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Tracking -->
+        <div class="row g-3 mb-4">
+            <!-- Personal Info Card -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center p-4">
+                        <h5 class="fw-bold">Personal Details</h5>
+                        <div class="my-3">
+                            {% if profile.is_profile_complete %}
+                                <span class="badge bg-success-subtle text-success border border-success p-2">✓ Completed</span>
+                            {% else %}
+                                <span class="badge bg-danger-subtle text-danger border border-danger p-2">✕ Incomplete</span>
+                            {% endif %}
+                        </div>
+                        <a href="{% url 'view_profile' %}" class="btn btn-outline-primary btn-sm w-100">View / Edit Profile</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academic Info Card -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center p-4">
+                        <h5 class="fw-bold">Academic Details</h5>
+                        <div class="my-3">
+                            {% if academics.is_academic_complete %}
+                                <span class="badge bg-success-subtle text-success border border-success p-2">✓ Completed</span>
+                            {% else %}
+                                <span class="badge bg-danger-subtle text-danger border border-danger p-2">✕ Incomplete</span>
+                            {% endif %}
+                        </div>
+                        <a href="{% url 'view_academics' %}" class="btn btn-outline-primary btn-sm w-100">View / Edit Academics</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Documents Card -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center p-4">
+                        <h5 class="fw-bold">Documents</h5>
+                        <div class="my-3">
+                            <span class="badge bg-info-subtle text-info-emphasis border border-info p-2">
+                                {{ uploaded_docs_count }} / {{ total_docs_count }} Uploaded
+                            </span>
+                        </div>
+                        <a href="{% url 'document_list' %}" class="btn btn-outline-primary btn-sm w-100">Upload Documents</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
