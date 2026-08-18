@@ -1,0 +1,102 @@
+{% extends 'accounts/base.html' %}
+{% block title %}Review {{ student.registration_number }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <a href="{% url 'verification_dashboard' %}" class="btn btn-outline-secondary btn-sm">← Back to List</a>
+    <span class="badge fs-6 
+        {% if student.status == 'VERIFIED' %}bg-success
+        {% elif student.status == 'REJECTED' %}bg-danger
+        {% elif student.status == 'UNDER_REVIEW' %}bg-warning text-dark
+        {% else %}bg-secondary{% endif %}">
+        Status: {{ student.get_status_display }}
+    </span>
+</div>
+
+{% if messages %}
+    {% for msg in messages %}
+        <div class="alert alert-success alert-dismissible fade show">{{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+    {% endfor %}
+{% endif %}
+
+<div class="row g-4">
+    <!-- Student Overview & Academics -->
+    <div class="col-lg-8">
+        <!-- Personal Info -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white fw-bold">1. Personal Information</div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-sm-6"><strong>Registration No:</strong> {{ student.registration_number }}</div>
+                    <div class="col-sm-6"><strong>Full Name:</strong> {{ student.user.get_full_name }}</div>
+                    <div class="col-sm-6"><strong>Email:</strong> {{ student.user.email }}</div>
+                    <div class="col-sm-6"><strong>Phone:</strong> {{ student.phone }}</div>
+                    <div class="col-sm-6"><strong>Gender:</strong> {{ student.get_gender_display }}</div>
+                    <div class="col-sm-6"><strong>DOB:</strong> {{ student.date_of_birth }}</div>
+                    <div class="col-12"><strong>Address:</strong> {{ student.address }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Academic Info -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white fw-bold">2. Academic Information</div>
+            <div class="card-body">
+                <h6 class="text-primary fw-bold">10th Grade</h6>
+                <p class="mb-2">School: {{ student.academics.tenth_school }} | Score: {{ student.academics.tenth_percentage }}% | Year: {{ student.academics.tenth_passing_year }}</p>
+                <h6 class="text-primary fw-bold mt-3">12th Grade / Intermediate</h6>
+                <p class="mb-2">College: {{ student.academics.intermediate_college }} | Score: {{ student.academics.intermediate_percentage }}% | Year: {{ student.academics.intermediate_passing_year }}</p>
+                <h6 class="text-primary fw-bold mt-3">Enrolled Branch</h6>
+                <p class="mb-0">Course: {{ student.academics.course }} | Branch: {{ student.academics.get_branch_display }} ({{ student.academics.admission_year }})</p>
+            </div>
+        </div>
+
+        <!-- Documents -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white fw-bold">3. Uploaded Documents</div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% for doc in documents %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ doc.get_document_type_display }}</strong>
+                                <br><small class="text-muted">Uploaded: {{ doc.updated_at|date:"d M Y, h:i A" }}</small>
+                            </div>
+                            <a href="{{ doc.file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">Open Document</a>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item text-muted">No documents uploaded by student yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verification Decision Panel -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0 sticky-top" style="top: 20px;">
+            <div class="card-header bg-dark text-white fw-bold">Verification Decision</div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Review Remarks / Reason</label>
+                        <textarea name="remarks" class="form-control" rows="4" placeholder="Provide notes or rejection reason (sent to student)..."></textarea>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" name="action" value="VERIFIED" class="btn btn-success">✓ Approve & Verify</button>
+                        <button type="submit" name="action" value="REJECTED" class="btn btn-danger">✕ Reject Application</button>
+                        <button type="submit" name="action" value="UNDER_REVIEW" class="btn btn-outline-secondary">Reset to Under Review</button>
+                    </div>
+                </form>
+
+                {% if student.status == 'VERIFIED' %}
+                    <hr>
+                    <a href="{% url 'admission_slip' student.pk %}" target="_blank" class="btn btn-outline-dark w-100">🖨️ View Admission Slip</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

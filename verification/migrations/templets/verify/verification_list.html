@@ -1,0 +1,74 @@
+{% extends 'accounts/base.html' %}
+{% block title %}Admin Verification Portal{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-0">Student Verification Hub</h3>
+        <p class="text-muted mb-0">Review student records, check uploads, and grant approvals.</p>
+    </div>
+</div>
+
+<!-- Status Filters -->
+<div class="btn-group mb-4" role="group">
+    <a href="?status=ALL" class="btn btn-outline-secondary {% if active_filter == 'ALL' %}active{% endif %}">All ({{ counts.all }})</a>
+    <a href="?status=UNDER_REVIEW" class="btn btn-outline-warning {% if active_filter == 'UNDER_REVIEW' %}active{% endif %}">Under Review ({{ counts.under_review }})</a>
+    <a href="?status=VERIFIED" class="btn btn-outline-success {% if active_filter == 'VERIFIED' %}active{% endif %}">Verified ({{ counts.verified }})</a>
+    <a href="?status=REJECTED" class="btn btn-outline-danger {% if active_filter == 'REJECTED' %}active{% endif %}">Rejected ({{ counts.rejected }})</a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Reg No.</th>
+                    <th>Full Name</th>
+                    <th>Course & Branch</th>
+                    <th>Profile / Academics</th>
+                    <th>Status</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td class="fw-bold">{{ student.registration_number }}</td>
+                    <td>
+                        {{ student.user.get_full_name|default:student.user.username }}<br>
+                        <small class="text-muted">{{ student.user.email }}</small>
+                    </td>
+                    <td>
+                        {% if student.academics %}
+                            {{ student.academics.course }} ({{ student.academics.branch|default:"--" }})
+                        {% else %}
+                            <span class="text-muted">N/A</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge {% if student.is_profile_complete %}bg-success{% else %}bg-secondary{% endif %}">Profile</span>
+                        <span class="badge {% if student.academics.is_academic_complete %}bg-success{% else %}bg-secondary{% endif %}">Academics</span>
+                    </td>
+                    <td>
+                        <span class="badge 
+                            {% if student.status == 'VERIFIED' %}bg-success
+                            {% elif student.status == 'REJECTED' %}bg-danger
+                            {% elif student.status == 'UNDER_REVIEW' %}bg-warning text-dark
+                            {% else %}bg-secondary{% endif %}">
+                            {{ student.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="text-end">
+                        <a href="{% url 'student_verification_detail' student.pk %}" class="btn btn-sm btn-primary">Review Details</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center py-4 text-muted">No student applications found for this filter.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
