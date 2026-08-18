@@ -1,0 +1,42 @@
+{% extends 'accounts/base.html' %}
+{% block title %}Academic Information{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="fw-bold mb-0">Academic Details</h4>
+                    <a href="{% url 'edit_academics' %}" class="btn btn-primary btn-sm">Edit Academics</a>
+                </div>
+                <hr>
+                <h6 class="text-primary fw-bold">10th Standard</h6>
+                <div class="row g-2 mb-3">
+                    <div class="col-sm-6"><strong>School:</strong> {{ academics.tenth_school|default:"Not Provided" }}</div>
+                    <div class="col-sm-3"><strong>Score:</strong> {{ academics.tenth_percentage|default:"--" }}%</div>
+                    <div class="col-sm-3"><strong>Year:</strong> {{ academics.tenth_passing_year|default:"--" }}</div>
+                </div>
+
+                <h6 class="text-primary fw-bold mt-3">Intermediate / Diploma (12th)</h6>
+                <div class="row g-2 mb-3">
+                    <div class="col-sm-6"><strong>College:</strong> {{ academics.intermediate_college|default:"Not Provided" }}</div>
+                    <div class="col-sm-3"><strong>Score:</strong> {{ academics.intermediate_percentage|default:"--" }}%</div>
+                    <div class="col-sm-3"><strong>Year:</strong> {{ academics.intermediate_passing_year|default:"--" }}</div>
+                </div>
+
+                <h6 class="text-primary fw-bold mt-3">Enrolled Course</h6>
+                <div class="row g-2 mb-3">
+                    <div class="col-sm-4"><strong>Course:</strong> {{ academics.course }}</div>
+                    <div class="col-sm-4"><strong>Branch:</strong> {{ academics.get_branch_display|default:"Not Selected" }}</div>
+                    <div class="col-sm-4"><strong>Admission Year:</strong> {{ academics.admission_year }}</div>
+                </div>
+
+                <div class="mt-4">
+                    <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary btn-sm">← Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
