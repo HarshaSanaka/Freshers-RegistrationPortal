@@ -74,6 +74,9 @@ def update_status(request, pk, status):
 def logout_view(request):
     logout(request)
     return redirect('login')
+    if user.is_staff:
+        return redirect('admin_dashboard')
+    return redirect('student_dashboard')
 
 @user_passes_test(lambda u: u.is_staff)
 def admin_dashboard_view(request):

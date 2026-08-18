@@ -1,0 +1,42 @@
+{% extends 'accounts/base.html' %}
+{% block title %}Edit Academics{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h4 class="fw-bold mb-3">Edit Academic Information</h4>
+                <form method="POST">
+                    {% csrf_token %}
+                    <h6 class="text-primary fw-bold">10th Standard</h6>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6"><label class="form-label">School Name</label>{{ form.tenth_school }}</div>
+                        <div class="col-md-3"><label class="form-label">Percentage (%)</label>{{ form.tenth_percentage }}</div>
+                        <div class="col-md-3"><label class="form-label">Passing Year</label>{{ form.tenth_passing_year }}</div>
+                    </div>
+
+                    <h6 class="text-primary fw-bold">Intermediate / 12th Standard</h6>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6"><label class="form-label">College Name</label>{{ form.intermediate_college }}</div>
+                        <div class="col-md-3"><label class="form-label">Percentage (%)</label>{{ form.intermediate_percentage }}</div>
+                        <div class="col-md-3"><label class="form-label">Passing Year</label>{{ form.intermediate_passing_year }}</div>
+                    </div>
+
+                    <h6 class="text-primary fw-bold">Admission Program</h6>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4"><label class="form-label">Course</label>{{ form.course }}</div>
+                        <div class="col-md-4"><label class="form-label">Branch</label>{{ form.branch }}</div>
+                        <div class="col-md-4"><label class="form-label">Admission Year</label>{{ form.admission_year }}</div>
+                    </div>
+
+                    <div class="mt-4 d-flex justify-content-between">
+                        <a href="{% url 'view_academics' %}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save Academics</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
