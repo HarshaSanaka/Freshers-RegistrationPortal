@@ -78,3 +78,9 @@
     </div>
 </div>
 {% endblock %}
+{% if profile.status == 'VERIFIED' %}
+    <div class="alert alert-success d-flex justify-content-between align-items-center mt-3">
+        <span>🎉 Congratulations! Your admission has been verified and approved.</span>
+        <a href="{% url 'admission_slip' profile.pk %}" target="_blank" class="btn btn-sm btn-success">Download Admission Slip</a>
+    </div>
+{% endif %}
