@@ -1,57 +1,60 @@
 from django.shortcuts import render
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.models import User
-from .forms import StudentRegistrationForm
-from .models import StudentProfile
+from django.views.decorators.cache import never_cache
+from students.forms import PersonalInfoForm
+from students.models import StudentProfile
 
-def register_view(request):
-    if request.user.is_authenticated:
-        return redirect('dashboard')
+def _login_destination(user):
+    if user.is_staff:
+        return 'verification_dashboard'
+    return 'dashboard'
 
-    if request.method == 'POST':
-        form = StudentRegistrationForm(request.POST, request.FILES)
-        if form.is_valid():
-            # Create standard User instance
-            user = User.objects.create_user(
-                username=form.cleaned_data['admission_number'],
-                email=form.cleaned_data['email'],
-                password=form.cleaned_data['password'],
-                first_name=form.cleaned_data['first_name'],
-                last_name=form.cleaned_data['last_name']
-            )
-            # Create attached StudentProfile
-            profile = form.save(commit=False)
-            profile.user = user
-            profile.save()
-
-            login(request, user)
-            return redirect('dashboard')
-    else:
-        form = StudentRegistrationForm()
-
-    return render(request, 'accounts/register.html', {'form': form})
-
+@never_cache
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect(_login_destination(request.user))
 
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        from .forms import StudentLoginForm
+        form = StudentLoginForm(request.POST)
         if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            if user.is_staff:
-                return redirect('admin_dashboard')
-            return redirect('dashboard')
+            profile = StudentProfile.objects.select_related('user').filter(
+                registration_number__iexact=form.cleaned_data['admission_number']
+            ).first()
+            if profile and profile.date_of_birth == form.cleaned_data['date_of_birth']:
+                login(request, profile.user, backend='django.contrib.auth.backends.ModelBackend')
+                return redirect(_login_destination(profile.user))
+            form.add_error(None, 'Admission number or date of birth is incorrect.')
     else:
-        form = AuthenticationForm()
+        from .forms import StudentLoginForm
+        form = StudentLoginForm()
 
     return render(request, 'accounts/login.html', {'form': form})
 
+
 @login_required
+def complete_profile_view(request):
+    if request.user.is_staff:
+        return redirect('admin_dashboard')
+
+    profile = get_object_or_404(StudentProfile, user=request.user)
+    if profile.is_profile_complete:
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        form = PersonalInfoForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = PersonalInfoForm(instance=profile)
+
+    return render(request, 'accounts/complete_profile.html', {'form': form})
+
+@login_required
+@never_cache
 def dashboard_view(request):
     if request.user.is_staff:
         return redirect('admin_dashboard')
@@ -71,12 +74,14 @@ def update_status(request, pk, status):
         profile.save()
     return redirect('admin_dashboard')
 
+@never_cache
 def logout_view(request):
     logout(request)
-    return redirect('login')
-    if user.is_staff:
-        return redirect('admin_dashboard')
-    return redirect('student_dashboard')
+    response = redirect('login')
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 @user_passes_test(lambda u: u.is_staff)
 def admin_dashboard_view(request):

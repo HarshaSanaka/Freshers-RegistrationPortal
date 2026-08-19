@@ -1,0 +1,44 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Login | Fresher Portal{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-5">
+        <div class="card shadow border-0 rounded-3">
+            <div class="card-body p-4 p-sm-5">
+                <h3 class="card-title text-center fw-bold mb-4">Sign In</h3>
+
+                {% if form.errors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% empty %}
+                            Please enter a valid admission number and date of birth.
+                        {% endfor %}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label text-muted" for="id_admission_number">Admission Number</label>
+                        {{ form.admission_number }}
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label text-muted" for="id_date_of_birth">Password (Date of Birth)</label>
+                        {{ form.date_of_birth }}
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mb-3 shadow-sm">Continue</button>
+                </form>
+
+                <div class="text-center text-muted">
+                    Use your admission number and date of birth from the college records.
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
