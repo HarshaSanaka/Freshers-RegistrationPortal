@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.views.decorators.cache import never_cache
 from .models import StudentProfile, AcademicInformation
 from .forms import PersonalInfoForm, AcademicInfoForm
 
@@ -9,6 +10,7 @@ from .forms import PersonalInfoForm, AcademicInfoForm
 TOTAL_REQUIRED_DOCUMENTS = 3
 
 @login_required
+@never_cache
 def student_dashboard(request):
     profile, _ = StudentProfile.objects.get_or_create(
         user=request.user, 
@@ -39,12 +41,14 @@ def student_dashboard(request):
 
 
 @login_required
+@never_cache
 def view_profile(request):
     profile = get_object_or_404(StudentProfile, user=request.user)
     return render(request, 'students/profile.html', {'profile': profile})
 
 
 @login_required
+@never_cache
 def edit_profile(request):
     profile = get_object_or_404(StudentProfile, user=request.user)
     if request.method == 'POST':
@@ -59,6 +63,7 @@ def edit_profile(request):
 
 
 @login_required
+@never_cache
 def view_academics(request):
     profile = get_object_or_404(StudentProfile, user=request.user)
     academics, _ = AcademicInformation.objects.get_or_create(student=profile)
@@ -66,6 +71,7 @@ def view_academics(request):
 
 
 @login_required
+@never_cache
 def edit_academics(request):
     profile = get_object_or_404(StudentProfile, user=request.user)
     academics, _ = AcademicInformation.objects.get_or_create(student=profile)

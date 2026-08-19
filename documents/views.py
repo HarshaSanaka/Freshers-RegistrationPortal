@@ -2,10 +2,12 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
+from django.views.decorators.cache import never_cache
 from .models import StudentDocument
 from .forms import DocumentUploadForm
 
 @login_required
+@never_cache
 def document_list_view(request):
     """Student portal for managing their document uploads."""
     documents = StudentDocument.objects.filter(user=request.user)

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 def student_upload_path(instance, filename):
     # Files are saved to media/documents/<admission_number>/<doc_type>/<filename>
-    admission_no = instance.user.student_profile.admission_number if hasattr(instance.user, 'student_profile') else instance.user.username
+    admission_no = instance.user.student_profile.registration_number if hasattr(instance.user, 'student_profile') else instance.user.username
     return os.path.join('documents', str(admission_no), instance.document_type, filename)
 
 class StudentDocument(models.Model):
