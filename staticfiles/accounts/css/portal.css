@@ -1,0 +1,86 @@
+:root {
+    --portal-ink: #17202a;
+    --portal-muted: #687581;
+    --portal-blue: #155eef;
+    --portal-blue-dark: #0d3cae;
+    --portal-surface: #ffffff;
+    --portal-background: #f3f6fb;
+}
+
+body {
+    background: var(--portal-background);
+    color: var(--portal-ink);
+}
+
+.navbar {
+    background: linear-gradient(110deg, #102a43, #155eef) !important;
+}
+
+.content-wrapper {
+    max-width: 1440px;
+}
+
+.admin-header {
+    padding: 1.25rem 1.5rem;
+    border-radius: 0.75rem;
+    color: #fff;
+    background: linear-gradient(110deg, #102a43, #155eef);
+    box-shadow: 0 0.75rem 2rem rgba(16, 42, 67, 0.16);
+}
+
+.admin-header h3,
+.admin-header p {
+    color: #fff !important;
+}
+
+.admin-header .btn-primary {
+    background: #fff;
+    color: var(--portal-blue-dark);
+    border-color: #fff;
+}
+
+.admin-table {
+    overflow: hidden;
+    border-radius: 0.75rem;
+    background: var(--portal-surface);
+}
+
+.admin-table thead th {
+    padding: 1rem;
+    color: var(--portal-muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.admin-table tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+.admin-table tbody tr {
+    transition: background-color 160ms ease;
+}
+
+.admin-table tbody tr:hover {
+    background: #f4f7ff;
+}
+
+.admin-table .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .admin-header {
+        align-items: flex-start !important;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .admin-header .btn {
+        width: 100%;
+    }
+}
