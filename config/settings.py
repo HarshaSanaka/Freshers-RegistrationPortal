@@ -29,9 +29,10 @@ DEBUG = False
 VERCEL_URL = os.environ.get('VERCEL_URL')
 
 ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
-    if host.strip()
+    'localhost',
+    '127.0.0.1',
+    '.vercel.app',
+    os.environ.get('VERCEL_URL', ''),
 ]
 if VERCEL_URL and VERCEL_URL not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(VERCEL_URL)
