@@ -223,3 +223,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+#virtual environments
+venv/
+.venv/
+env/
+ENV/
+#local SQLite Databases
+*.sqlite3
+*.db
+# media uploads and node modules
+media/
+staticifiles/
+node_modules/
