@@ -1,6 +1,4 @@
-# freshers-registration-Portal
 # Fresher Registration Portal
-
 ## Project Description
 
 A web-based platform that allows newly admitted
@@ -29,14 +27,14 @@ Python+Django
 
 Database:
 SqlLite
+postgresql
 
 Version Control:
 Git + GitHub
 
 ## Team Members
 
-Member 1
-Member 2
-Member 3
-Member 4
-Member 5
+S.HarshaVardhan
+S.Govardhan
+S.Shabber
+S.Shadik
