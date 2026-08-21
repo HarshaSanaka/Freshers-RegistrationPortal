@@ -3,23 +3,23 @@
 {% block title %}Admin Verification Portal{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="admin-header d-flex justify-content-between align-items-center mb-4">
     <div>
         <h3 class="fw-bold mb-0">Student Verification Dashboard</h3>
         <p class="text-muted mb-0">Review submitted student documents and approve registrations.</p>
     </div>
-    <span class="badge bg-secondary p-2">Total Applicants: {{ students|length }}</span>
+    <a href="{% url 'add_student' %}" class="btn btn-primary">Add student profile</a>
 </div>
 
-<div class="card shadow-sm border-0">
+<div class="admin-table card shadow-sm border-0">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
                     <th>Admission No</th>
                     <th>Student Name</th>
-                    <th>Dept</th>
-                    <th>Scores (10th/12th)</th>
+                    <th>Course / Branch</th>
+                    <th>Contact</th>
                     <th>Documents</th>
                     <th>Status</th>
                     <th class="text-center">Action</th>
@@ -33,13 +33,21 @@
                         {{ student.user.get_full_name }}<br>
                         <small class="text-muted">{{ student.user.email }}</small>
                     </td>
-                    <td><span class="badge bg-info text-dark">{{ student.department }}</span></td>
-                    <td>{{ student.tenth_percentage }}% / {{ student.twelfth_percentage }}%</td>
+                    <td>
+                        {% if student.academics %}
+                            {{ student.academics.course }} / {{ student.academics.get_branch_display }}
+                        {% else %}
+                            <span class="text-muted">Not added</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ student.phone }}<br><small class="text-muted">{{ student.date_of_birth|date:'d M Y' }}</small></td>
                     <td>
                         <div class="btn-group btn-group-sm">
-                            <a href="{{ student.marksheet_10th.url }}" target="_blank" class="btn btn-outline-secondary">10th</a>
-                            <a href="{{ student.marksheet_12th.url }}" target="_blank" class="btn btn-outline-secondary">12th</a>
-                            <a href="{{ student.id_proof.url }}" target="_blank" class="btn btn-outline-secondary">ID</a>
+                            {% for document in student.user.documents.all %}
+                                <a href="{{ document.file.url }}" target="_blank" class="btn btn-outline-secondary">{{ document.get_document_type_display|truncatewords:1 }}</a>
+                            {% empty %}
+                                <span class="text-muted">None</span>
+                            {% endfor %}
                         </div>
                     </td>
                     <td>
@@ -51,11 +59,11 @@
                         </span>
                     </td>
                     <td class="text-center">
-                        {% if student.status == 'PENDING' %}
+                        {% if student.status == 'UNDER_REVIEW' %}
                             <a href="{% url 'update_status' student.id 'VERIFIED' %}" class="btn btn-sm btn-success">Approve</a>
                             <a href="{% url 'update_status' student.id 'REJECTED' %}" class="btn btn-sm btn-danger">Reject</a>
                         {% else %}
-                            <a href="{% url 'update_status' student.id 'PENDING' %}" class="btn btn-sm btn-outline-secondary">Reset</a>
+                            <a href="{% url 'update_status' student.id 'UNDER_REVIEW' %}" class="btn btn-sm btn-outline-secondary">Review</a>
                         {% endif %}
                     </td>
                 </tr>

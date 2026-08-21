@@ -28,6 +28,16 @@ class StudentLoginForm(AdmissionNumberForm):
     )
 
 
+class AdminStudentCreationForm(forms.Form):
+    registration_number = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    date_of_birth = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
+
+    def clean_registration_number(self):
+        registration_number = self.cleaned_data['registration_number'].strip()
+        if StudentProfile.objects.filter(registration_number__iexact=registration_number).exists():
+            raise forms.ValidationError('A student with this registration number already exists.')
+        return registration_number
+
 class StudentRegistrationForm(forms.ModelForm):
     first_name = forms.CharField(max_length=30, required=True)
     last_name = forms.CharField(max_length=30, required=True)
