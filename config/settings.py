@@ -21,21 +21,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)61e&7@64-ffnh4f=r$j&a6ypt=ap$h8kk-#a#*$3e1w&o%h(^'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'dev-only-insecure-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+
+VERCEL_URL = os.environ.get('VERCEL_URL')
 
 ALLOWED_HOSTS = [
     host.strip()
     for host in os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
     if host.strip()
 ]
+if VERCEL_URL and VERCEL_URL not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(VERCEL_URL)
 
 CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8000',
     'http://localhost:8000',
 ]
+if VERCEL_URL:
+    CSRF_TRUSTED_ORIGINS.append(f'https://{VERCEL_URL}')
 
 
 # Application definition
@@ -132,7 +138,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
