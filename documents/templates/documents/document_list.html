@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Documents</title>
+</head>
+<body>
+    <h1>My Documents</h1>
+    {% if documents %}
+        <ul>
+            {% for document in documents %}
+                <li>
+                    {{ document.get_document_type_display }}:
+                    <a href="{{ document.file.url }}">View file</a>
+                    - {{ document.get_status_display }}
+                    {% if document.rejection_reason %}
+                        <p>Reason: {{ document.rejection_reason }}</p>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No documents have been uploaded.</p>
+    {% endif %}
+</body>
+</html>
